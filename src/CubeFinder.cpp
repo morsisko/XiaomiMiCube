@@ -1,57 +1,59 @@
 #include "CubeFinder.h"
 
-bool CubeFinder::isCube(BLEAdvertisedDevice* device)
+bool CubeFinder::isCube(BLEAdvertisedDevice device)
 {
-	if (!device->haveServiceData())
+	if (!device.haveServiceData())
 		return false;
 	
 	if (!device.getServiceDataUUID().equals(xiaomiUUID))
 		return false;
 	
-	const std::string data = device->getServiceData();
+	std::string data = device.getServiceData();
 	
 	return data[2] == 0xE1 && data[3] == 0x4;
 }
 
 CubeFinder::CubeFinder()
 {
-	BLEDevice::init();
-	scan = BLEDevice::getScan();
-	cube = nullptr;
+	
 }
 
 void CubeFinder::scan(int duration, bool active, int interval, int window)
 {
-	cube = nullptr;
-	scan->setActiveScan(active); //active scan uses more power, but get results faster
-	scan->setInterval(interval);
-	scan->setWindow(window);  // less or equal setInterval value
-	BLEScanResults foundDevices = scan->start(duration, false);
+	BLEScan* scanner = BLEDevice::getScan();
+	found = false;
+	scanner->clearResults();
+	scanner->setActiveScan(active); //active scan uses more power, but get results faster
+	scanner->setInterval(interval);
+	scanner->setWindow(window);  // less or equal setInterval value
+	BLEScanResults foundDevices = scanner->start(duration, false);
 	
 	for (int i = 0; i < foundDevices.getCount(); i++)
 	{
-		BLEAdvertisedDevice* foundDevice = foundDevices.getDevice(i);
+		BLEAdvertisedDevice foundDevice = foundDevices.getDevice(i);
 		if (isCube(foundDevice))
 		{
 			cube = foundDevice;
+			found = true;
 			break;
 		}
 	}
 }
 
-BLEAdvertisedDevice* CubeFinder::getCubeDevice()
+BLEAdvertisedDevice CubeFinder::getCubeDevice()
 {
 	return cube;
 }
 
 bool CubeFinder::isCubeFound()
 {
-	return cube != nullptr;
+	return found;
 }
 
 void CubeFinder::clear()
 {
-	scan->clearResults();
+	BLEScan* scanner = BLEDevice::getScan();
+	scanner->clearResults();
 }
 
 CubeFinder::~CubeFinder()
