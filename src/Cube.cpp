@@ -18,8 +18,6 @@ static void notifyCallback(
 
 void Cube::onNotify(BLERemoteCharacteristic* pBLERemoteCharacteristic, uint8_t* pData, size_t length, bool isNotify)
 {
-	Serial.println("Moved from class!");
-	
 	if (length != 20)
 		return;
 	
@@ -29,7 +27,7 @@ void Cube::onNotify(BLERemoteCharacteristic* pBLERemoteCharacteristic, uint8_t* 
 	decodeMovePacket(pData);
 	
 	if (onMove)
-		onMove(this);
+		onMove(this, currentRawState[16]);
 	
 	if (onSolve && isSolved())
 		onSolve(this);
@@ -101,4 +99,34 @@ bool Cube::isSolved()
 			return false;
 	}
 	return true;
+}
+
+char* Cube::moveToString(MoveCode code)
+{
+	if (code == MOVE_R )
+		return "R";
+	if (code == MOVE_R_)
+		return "R'";
+	if (code == MOVE_L )
+		return "L";
+	if (code == MOVE_L_)
+		return "L'";
+	if (code == MOVE_U )
+		return "U";
+	if (code == MOVE_U_)
+		return "U'";
+	if (code == MOVE_D )
+		return "D";
+	if (code == MOVE_D_)
+		return "D'";
+	if (code == MOVE_F )
+		return "F";
+	if (code == MOVE_F_)
+		return "F'";
+	if (code == MOVE_B )
+		return "B";
+	if (code == MOVE_B_)
+		return "B'";
+	
+	return "?";
 }
