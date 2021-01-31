@@ -52,32 +52,101 @@ void Cube::connect(BLEAdvertisedDevice device)
 {
 	pClient = BLEDevice::createClient();
 	pClient->connect(&device);
-	BLERemoteService* pRemoteService = pClient->getService(realUUID);
+	
+	subscribeForMoveNotifications();
+	subscribeForSettingsNotifications();
+}
+
+void Cube::subscribeForMoveNotifications()
+{
+	BLERemoteService* pRemoteService = pClient->getService(moveServiceUUID);
 	
     if (pRemoteService == nullptr) {
       Serial.print("Failed to find our service UUID: ");
-      Serial.println(serviceUUID.toString().c_str());
+      Serial.println(moveServiceUUID.toString().c_str());
       pClient->disconnect();
       return;
     }
 	
-    BLERemoteCharacteristic* pRemoteCharacteristic = pRemoteService->getCharacteristic(charUUID);
+    BLERemoteCharacteristic* pRemoteCharacteristic = pRemoteService->getCharacteristic(moveCharUUID);
     if (pRemoteCharacteristic == nullptr) {
       Serial.print("Failed to find our characteristic UUID: ");
-      Serial.println(charUUID.toString().c_str());
+      Serial.println(moveCharUUID.toString().c_str());
       pClient->disconnect();
       return;
     }
 	
     if(pRemoteCharacteristic->canNotify())
     {
-      //pRemoteCharacteristic->registerForNotify(notifyCallback);
 	  pRemoteCharacteristic->setCallbacks(this);
 	  Serial.println("Registered callback!");
     }
 	else
 	{
 		Serial.println("Registration failed!");
+	}
+}
+
+void Cube::subscribeForSettingsNotifications()
+{
+	BLERemoteService* pRemoteService = pClient->getService(readWriteServiceUUID);
+	
+    if (pRemoteService == nullptr) {
+      Serial.print("Failed to find our service UUID: ");
+      Serial.println(readWriteServiceUUID.toString().c_str());
+      pClient->disconnect();
+      return;
+    }
+	
+    BLERemoteCharacteristic* pRemoteCharacteristic = pRemoteService->getCharacteristic(readUUID);
+    if (pRemoteCharacteristic == nullptr) {
+      Serial.print("Failed to find our characteristic UUID: ");
+      Serial.println(readUUID.toString().c_str());
+      pClient->disconnect();
+      return;
+    }
+	
+    if(pRemoteCharacteristic->canNotify())
+    {
+	  pRemoteCharacteristic->setCallbacks(this);
+	  Serial.println("Registered callback!");
+    }
+	else
+	{
+		Serial.println("Registration failed!");
+	}
+}
+
+void Cube::parseSettingsData(const uint8_t* packet, int len)
+{
+	uint8_t cmd = packet[0];
+	
+	if (cmd == SYS_CMD_GET_ALL_STEP && len >= 5)
+	{
+		totalMoves = packet[1];
+		totalMoves << 8;
+		totalMoves |= packet[2];
+		totalMoves << 8;
+		totalMoves |= packet[3];
+		totalMoves << 8;
+		totalMoves |= packet[4];
+		totalMoves << 8;
+	}
+	
+	else if (cmd == SYS_CMD_GET_ALL_STEP && len >= 7)
+	{
+		for (int i = 0; i < 6; i++)
+			uid[i] = packet[i + 1];
+	}
+	
+	else if (cmd == SYS_CMD_GET_BATTERY && len >= 3)
+	{
+		uint8_t adcValue = data[1];
+		if (adcValue >= 170)
+			batteryVoltage = 4.5f;
+		
+		else if (adcValue < 120)
+			batteryVoltage = 3.0f;
 	}
 }
 

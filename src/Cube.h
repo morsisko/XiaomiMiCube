@@ -3,11 +3,11 @@
 #include <BLEClient.h>
 #include <BLEAdvertisedDevice.h>
 
-static BLEUUID serviceUUID("0000fe95-0000-1000-8000-00805f9b34fb"); //xiaomi uuid
-static BLEUUID realUUID("0000aadb-0000-1000-8000-00805f9b34fb"); //service uuid
-static BLEUUID ReadWriteServiceUUID("0000aaaa-0000-1000-8000-00805f9b34fb");
+static BLEUUID xiaomiUUID("0000fe95-0000-1000-8000-00805f9b34fb"); //xiaomi uuid
+static BLEUUID moveServiceUUID("0000aadb-0000-1000-8000-00805f9b34fb"); //service uuid
+static BLEUUID readWriteServiceUUID("0000aaaa-0000-1000-8000-00805f9b34fb");
 
-static BLEUUID charUUID("0000aadc-0000-1000-8000-00805f9b34fb"); //characteristic uuid
+static BLEUUID moveCharUUID("0000aadc-0000-1000-8000-00805f9b34fb"); //characteristic uuid
 static BLEUUID writeUUID("0000aaac-0000-1000-8000-00805f9b34fb");
 static BLEUUID readUUID("0000aaab-0000-1000-8000-00805f9b34fb");
 
@@ -30,9 +30,15 @@ private:
 	BLEClient* pClient;
 	MovedCallback onMove;
 	SolvedCallback onSolve;
+	int totalMoves = 0;
+	float batteryVoltage = 3.00f;
+	uint8_t uid[6];
 	
 	void onNotify(BLERemoteCharacteristic* pBLERemoteCharacteristic, uint8_t* pData, size_t length, bool isNotify) override;
 	void decodeMovePacket(const uint8_t* packet);
+	void subscribeForMoveNotifications();
+	void subscribeForSettingsNotifications();
+	void parseSettingsData(const uint8_t* packet, int len);
 	
 public:
 	Cube();
