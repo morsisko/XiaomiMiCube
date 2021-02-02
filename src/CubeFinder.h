@@ -3,8 +3,6 @@
 #include <BLEScan.h>
 #include <BLEAdvertisedDevice.h>
 
-static BLEUUID xiaomiUUID("0000fe95-0000-1000-8000-00805f9b34fb");
-
 class CubeFinder
 {
 private:

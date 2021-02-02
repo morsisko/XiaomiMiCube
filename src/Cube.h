@@ -28,11 +28,13 @@ private:
 	
 	uint8_t currentRawState[20] = {0};
 	BLEClient* pClient;
+	BLERemoteCharacteristic* writeCharacteristic;
 	MovedCallback onMove;
 	SolvedCallback onSolve;
-	int totalMoves = 0;
+	uint32_t totalMoves = 0;
 	float batteryVoltage = 3.00f;
 	uint8_t uid[6];
+	uint8_t softVersion[7];
 	
 	void onNotify(BLERemoteCharacteristic* pBLERemoteCharacteristic, uint8_t* pData, size_t length, bool isNotify) override;
 	void decodeMovePacket(const uint8_t* packet);
@@ -46,6 +48,11 @@ public:
 	void setOnMove(MovedCallback onMove);
 	void setOnSolve(SolvedCallback onSolve);
 	bool isSolved();
+	void requestTotalMoves();
+	void requestBattery();
+	void requestUid();
+	void requestSoftVersion();
+	void requestAllProperties();
 	
 	
 	enum MoveCode
