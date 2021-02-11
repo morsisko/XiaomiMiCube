@@ -425,3 +425,34 @@ void CubeState::ConverseChangeFaceAgain(uint8_t a1, uint8_t a2, uint8_t a3, uint
 	cube[a2] = cube[a1];
 	cube[a1] = num;
 }
+
+uint8_t CubeState::get(uint8_t index) const
+{
+	if (index < 1 || index > 54)
+		return 0;
+	
+	return cube[index];
+}
+
+char* CubeState::colorToString(Color color)
+{
+	if (color == WHITE)
+		return "WHITE";
+	
+	if (color == YELLOW)
+		return "YELLOW";
+	
+	if (color == GREEN)
+		return "GREEN";
+	
+	if (color == BLUE)
+		return "BLUE";
+	
+	if (color == RED)
+		return "RED";
+	
+	if (color == ORANGE)
+		return "ORANGE";
+	
+	return "UNKNOWN";	
+}

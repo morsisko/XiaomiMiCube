@@ -32,6 +32,15 @@ void Cube::onNotify(BLERemoteCharacteristic* pBLERemoteCharacteristic, uint8_t* 
 	
 	decodeMovePacket(pData);
 	
+	Serial.print("Raw state: ");
+	for (int i = 0; i < 20; i++)
+	{
+		Serial.print((int)currentRawState[i], HEX);
+		Serial.print(" ");
+	}
+	
+	Serial.println("");
+	
 	if (onMove)
 		onMove(this, currentRawState[16]);
 	
@@ -152,9 +161,15 @@ void Cube::requestAllProperties()
 	requestSoftVersion();
 }
 
+const CubeState& Cube::getState()
+{
+	cubeState.update(currentRawState);
+	return cubeState;
+}
 
 void Cube::parseSettingsData(const uint8_t* packet, int len)
 {
+	/*
 	for (int i = 0; i < len; i++)
 	{
 		Serial.print(packet[i], HEX);
@@ -162,7 +177,7 @@ void Cube::parseSettingsData(const uint8_t* packet, int len)
 	}
 	
 	Serial.println("");
-	
+	*/
 	uint8_t cmd = packet[0];
 	
 	if (cmd == SYS_CMD_GET_ALL_STEP && len >= 5)

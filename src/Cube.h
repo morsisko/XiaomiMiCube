@@ -2,6 +2,7 @@
 #include <BLEUtils.h>
 #include <BLEClient.h>
 #include <BLEAdvertisedDevice.h>
+#include "CubeState.h"
 
 static BLEUUID xiaomiUUID("0000fe95-0000-1000-8000-00805f9b34fb"); //xiaomi uuid
 static BLEUUID moveServiceUUID("0000aadb-0000-1000-8000-00805f9b34fb"); //service uuid
@@ -31,6 +32,7 @@ private:
 	BLERemoteCharacteristic* writeCharacteristic;
 	MovedCallback onMove;
 	SolvedCallback onSolve;
+	CubeState cubeState;
 	uint32_t totalMoves = 0;
 	float batteryVoltage = 3.00f;
 	uint8_t uid[6];
@@ -53,6 +55,7 @@ public:
 	void requestUid();
 	void requestSoftVersion();
 	void requestAllProperties();
+	const CubeState& getState();
 	
 	
 	enum MoveCode
