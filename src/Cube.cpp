@@ -240,6 +240,11 @@ bool Cube::isSolved()
 	return true;
 }
 
+bool isConnected()
+{
+	pClient->isConnected();
+}
+
 char* Cube::moveToString(MoveCode code)
 {
 	if (code == MOVE_R )

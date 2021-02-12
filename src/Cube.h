@@ -50,6 +50,7 @@ public:
 	void setOnMove(MovedCallback onMove);
 	void setOnSolve(SolvedCallback onSolve);
 	bool isSolved();
+	bool isConnected();
 	void requestTotalMoves();
 	void requestBattery();
 	void requestUid();
