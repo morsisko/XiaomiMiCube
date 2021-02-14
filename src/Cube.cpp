@@ -32,15 +32,6 @@ void Cube::onNotify(BLERemoteCharacteristic* pBLERemoteCharacteristic, uint8_t* 
 	
 	decodeMovePacket(pData);
 	
-	Serial.print("Raw state: ");
-	for (int i = 0; i < 20; i++)
-	{
-		Serial.print((int)currentRawState[i], HEX);
-		Serial.print(" ");
-	}
-	
-	Serial.println("");
-	
 	if (onMove)
 		onMove(this, currentRawState[16]);
 	
@@ -169,15 +160,6 @@ const CubeState& Cube::getState()
 
 void Cube::parseSettingsData(const uint8_t* packet, int len)
 {
-	/*
-	for (int i = 0; i < len; i++)
-	{
-		Serial.print(packet[i], HEX);
-		Serial.print(" ");
-	}
-	
-	Serial.println("");
-	*/
 	uint8_t cmd = packet[0];
 	
 	if (cmd == SYS_CMD_GET_ALL_STEP && len >= 5)
@@ -240,7 +222,7 @@ bool Cube::isSolved()
 	return true;
 }
 
-bool isConnected()
+bool Cube::isConnected()
 {
 	pClient->isConnected();
 }

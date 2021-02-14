@@ -18,19 +18,6 @@ public:
 	void update(uint8_t raw[20]);
 	uint8_t get(uint8_t index) const;
 	
-	/*
-	enum Color
-	{
-		INVALID = 0,
-		YELLOW = 1,
-		BLUE = 2,
-		RED = 3,
-		GREEN = 4,
-		ORANGE = 5,
-		WHITE = 6
-	};
-	*/
-	
 	enum Color
 	{
 		INVALID = 0,
