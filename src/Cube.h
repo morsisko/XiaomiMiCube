@@ -16,7 +16,7 @@ class Cube;
 typedef void (*MovedCallback)(Cube*, uint8_t);
 typedef void (*SolvedCallback)(Cube*);
 
-class Cube : public BLERemoteCharacteristicCallbacks
+class Cube
 {
 private:
 	static const uint8_t SYS_CMD_GET_BATTERY = 0xB5;
@@ -38,7 +38,8 @@ private:
 	uint8_t uid[6];
 	uint8_t softVersion[7];
 	
-	void onNotify(BLERemoteCharacteristic* pBLERemoteCharacteristic, uint8_t* pData, size_t length, bool isNotify) override;
+	void onMoveNotify(BLERemoteCharacteristic* pBLERemoteCharacteristic, uint8_t* pData, size_t length, bool isNotify);
+	void onSettingsNotify(BLERemoteCharacteristic* pBLERemoteCharacteristic, uint8_t* pData, size_t length, bool isNotify);
 	void decodeMovePacket(const uint8_t* packet);
 	void subscribeForMoveNotifications();
 	void subscribeForSettingsNotifications();

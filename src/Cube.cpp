@@ -4,26 +4,9 @@
 const uint8_t Cube::encodingData[] = {80, 175, 152, 32, 170, 119, 19, 137, 218, 230, 63, 95, 46, 130, 106, 175, 163, 243, 20, 7, 167, 21, 168, 232, 143, 175, 42, 125, 126, 57, 254, 87, 217, 91, 85, 215};
 const uint8_t Cube::solvedState[] = {0x12, 0x34, 0x56, 0x78, 0x33, 0x33, 0x33, 0x33, 0x12, 0x34, 0x56, 0x78, 0x9A, 0xBC, 0x00, 0x00};
 
-/*
-static void notifyCallback(
-  BLERemoteCharacteristic* pBLERemoteCharacteristic,
-  uint8_t* pData,
-  size_t length,
-  bool isNotify) {
-    
-    Serial.print("Moved");
 
-}
-*/
-
-void Cube::onNotify(BLERemoteCharacteristic* pBLERemoteCharacteristic, uint8_t* pData, size_t length, bool isNotify)
+void Cube::onMoveNotify(BLERemoteCharacteristic* pBLERemoteCharacteristic, uint8_t* pData, size_t length, bool isNotify)
 {
-	if (pBLERemoteCharacteristic->getUUID().equals(readUUID))
-	{
-		parseSettingsData(pData, length);
-		return;
-	}
-	
 	if (length != 20)
 		return;
 	
@@ -37,6 +20,11 @@ void Cube::onNotify(BLERemoteCharacteristic* pBLERemoteCharacteristic, uint8_t* 
 	
 	if (onSolve && isSolved())
 		onSolve(this);
+}
+
+void Cube::onSettingsNotify(BLERemoteCharacteristic* pBLERemoteCharacteristic, uint8_t* pData, size_t length, bool isNotify)
+{
+	parseSettingsData(pData, length);
 }
 
 Cube::Cube()
@@ -84,7 +72,7 @@ void Cube::subscribeForMoveNotifications()
 	
     if(pRemoteCharacteristic->canNotify())
     {
-	  pRemoteCharacteristic->setCallbacks(this);
+	  pRemoteCharacteristic->registerForNotify(std::bind(&Cube::onMoveNotify, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4));
 	  Serial.println("Registered callback!");
     }
 	else
@@ -115,7 +103,7 @@ void Cube::subscribeForSettingsNotifications()
 	
     if(readCharacteristic->canNotify())
     {
-	  readCharacteristic->setCallbacks(this);
+	  readCharacteristic->registerForNotify(std::bind(&Cube::onSettingsNotify, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4));
 	  Serial.println("Registered callback!");
     }
 	else
