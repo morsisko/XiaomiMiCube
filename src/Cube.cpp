@@ -56,16 +56,12 @@ void Cube::subscribeForMoveNotifications()
 	BLERemoteService* pRemoteService = pClient->getService(moveServiceUUID);
 	
     if (pRemoteService == nullptr) {
-      Serial.print("Failed to find our service UUID: ");
-      Serial.println(moveServiceUUID.toString().c_str());
       pClient->disconnect();
       return;
     }
 	
     BLERemoteCharacteristic* pRemoteCharacteristic = pRemoteService->getCharacteristic(moveCharUUID);
     if (pRemoteCharacteristic == nullptr) {
-      Serial.print("Failed to find our characteristic UUID: ");
-      Serial.println(moveCharUUID.toString().c_str());
       pClient->disconnect();
       return;
     }
@@ -73,12 +69,7 @@ void Cube::subscribeForMoveNotifications()
     if(pRemoteCharacteristic->canNotify())
     {
 	  pRemoteCharacteristic->registerForNotify(std::bind(&Cube::onMoveNotify, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4));
-	  Serial.println("Registered callback!");
     }
-	else
-	{
-		Serial.println("Registration failed!");
-	}
 }
 
 void Cube::subscribeForSettingsNotifications()
@@ -86,8 +77,6 @@ void Cube::subscribeForSettingsNotifications()
 	BLERemoteService* pRemoteService = pClient->getService(readWriteServiceUUID);
 	
     if (pRemoteService == nullptr) {
-      Serial.print("Failed to find our service UUID: ");
-      Serial.println(readWriteServiceUUID.toString().c_str());
       pClient->disconnect();
       return;
     }
@@ -95,8 +84,6 @@ void Cube::subscribeForSettingsNotifications()
 	writeCharacteristic = pRemoteService->getCharacteristic(writeUUID);
     BLERemoteCharacteristic* readCharacteristic = pRemoteService->getCharacteristic(readUUID);
     if (readCharacteristic == nullptr || writeCharacteristic == nullptr) {
-      Serial.print("Failed to find our characteristic UUID: ");
-      Serial.println(readUUID.toString().c_str());
       pClient->disconnect();
       return;
     }
@@ -104,12 +91,7 @@ void Cube::subscribeForSettingsNotifications()
     if(readCharacteristic->canNotify())
     {
 	  readCharacteristic->registerForNotify(std::bind(&Cube::onSettingsNotify, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4));
-	  Serial.println("Registered callback!");
     }
-	else
-	{
-		Serial.println("Registration failed!");
-	}
 }
 
 void Cube::requestTotalMoves()
@@ -159,8 +141,6 @@ void Cube::parseSettingsData(const uint8_t* packet, int len)
 		totalMoves |= packet[3];
 		totalMoves <<= 8;
 		totalMoves |= packet[4];
-		Serial.print("Total moves: ");
-		Serial.println(totalMoves);
 	}
 	
 	else if (cmd == SYS_CMD_GET_UID && len >= 7)
@@ -243,4 +223,24 @@ char* Cube::moveToString(MoveCode code)
 		return "B'";
 	
 	return "?";
+}
+
+uint32_t Cube::getTotalMoves()
+{
+	return totalMoves;
+}
+
+float Cube::getBatteryVoltage()
+{
+	return batteryVoltage;
+}
+
+uint8_t* Cube::getUid()
+{
+	return uid;
+}
+
+uint8_t* Cube::getSoftVersion()
+{
+	return softVersion;
 }

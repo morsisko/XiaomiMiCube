@@ -58,6 +58,10 @@ public:
 	void requestSoftVersion();
 	void requestAllProperties();
 	const CubeState& getState();
+	uint32_t getTotalMoves();
+	float getBatteryVoltage();
+	uint8_t* getUid();
+	uint8_t* getSoftVersion();
 	
 	
 	enum MoveCode
