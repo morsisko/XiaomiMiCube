@@ -2,6 +2,8 @@
 A library that allows you to connect ESP32 with Xiaomi Rubiks Cube over BLE
 
 # Connecting
+Before using this library, make sure you use the newest version of BLE library.
+
 Firstly you need to make your cube discoverable, to do so turn any of its faces. Your cube should make a beep.
 
 To find your device you may use `CubeFinder`
@@ -53,5 +55,5 @@ if (state.get(32) == CubeState::Color::Green) {
 }
 ```
 
-Id of particular blocks:
+Ids of particular blocks:
 ![Blocks](https://github.com/morsisko/XiaomiMiCube/blob/master/positions.png?raw=true)
