@@ -31,6 +31,7 @@ Cube::Cube()
 {
 	onMove = nullptr;
 	onSolve = nullptr;
+	pClient = nullptr;
 }
 
 void Cube::decodeMovePacket(const uint8_t* packet)
@@ -96,21 +97,25 @@ void Cube::subscribeForSettingsNotifications()
 
 void Cube::requestTotalMoves()
 {
+	if (writeCharacteristic)
 	writeCharacteristic->writeValue(SYS_CMD_GET_ALL_STEP);
 }
 
 void Cube::requestBattery()
 {
+	if (writeCharacteristic)
 	writeCharacteristic->writeValue(SYS_CMD_GET_BATTERY);
 }
 
 void Cube::requestUid()
 {
+	if (writeCharacteristic)
 	writeCharacteristic->writeValue(SYS_CMD_GET_UID);
 }
 
 void Cube::requestSoftVersion()
 {
+	if (writeCharacteristic)
 	writeCharacteristic->writeValue(SYS_CMD_GET_SOFTWARE_VERSION);
 }
 
@@ -192,6 +197,9 @@ bool Cube::isSolved()
 
 bool Cube::isConnected()
 {
+	if (!pClient)
+		return false;
+	
 	pClient->isConnected();
 }
 
