@@ -1,6 +1,10 @@
 # XiaomiMiCube
 A library that allows you to connect ESP32 with Xiaomi Rubiks Cube over BLE
 
+# Demo
+[![Video](http://img.youtube.com/vi/8LSAVdsl4qg/0.jpg)](http://www.youtube.com/watch?v=8LSAVdsl4qg)
+
+Source code of this demo: [Click](examples/lcd_timer/lcd_timer.ino)
 # Connecting
 Before using this library, make sure you use the newest version of BLE library.
 
