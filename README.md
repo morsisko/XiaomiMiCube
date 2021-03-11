@@ -50,7 +50,7 @@ uint32_t moves = cube.getTotalMoves();
 ```
 
 # Cube state
-You can also check whenever cube is in particular state. To do so you need to generate the cube state (for example in he onMove callback, but you can do it everywhere).
+You can also check whenever cube is in particular state. To do so you need to generate the cube state (for example in the onMove callback, but you can do it everywhere).
 
 ```cpp
 const CubeState& state = cube.getState();
